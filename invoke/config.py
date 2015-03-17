@@ -256,68 +256,43 @@ class Config(DataProxy):
         # Stores merged configs and is accessed via DataProxy.
         self.config = {}
 
-        #: Default configuration values, typically hardcoded in the
-        #: CLI/execution machinery.
+        # NOTE: for the below members, see sites/docs/api/config.rst.
+        # Comment/docstring driven attribute docs for private docs don't
+        # currently work (https://github.com/sphinx-doc/sphinx/issues/1362)
+
         self._defaults = {} if defaults is None else defaults
 
-        #: Collection-driven config data, gathered from the collection tree
-        #: containing the currently executing task.
         self._collection = {}
 
-        #: Path prefix searched for the system config file.
-        #: There is no default system prefix on Windows
         if system_prefix is None:
             self._system_prefix = (None if WINDOWS else '/etc/invoke')
         else:
             self._system_prefix = system_prefix
-        #: Path to loaded system config file, if any.
         self._system_path = None
-        #: Whether the system config file has been loaded or not (or ``None``
-        #: if no loading has been attempted yet.)
         self._system_found = None
-        #: Data loaded from the system config file.
         self._system = {}
 
-        #: Path prefix searched for per-user config files.
         self._user_prefix = '~/.invoke' if user_prefix is None else user_prefix
-        #: Path to loaded user config file, if any.
         self._user_path = None
-        #: Whether the user config file has been loaded or not (or ``None``
-        #: if no loading has been attempted yet.)
         self._user_found = None
-        #: Data loaded from the per-user config file.
         self._user = {}
 
-        #: Parent directory of the current root tasks file, if applicable.
         self._project_home = project_home
-        # And a normalized prefix version not really publicly exposed
         self._project_prefix = None
         if self._project_home is not None:
             self._project_prefix = join(project_home, 'invoke')
-        #: Path to loaded per-project config file, if any.
         self._project_path = None
-        #: Whether the project config file has been loaded or not (or ``None``
-        #: if no loading has been attempted yet.)
         self._project_found = None
-        #: Data loaded from the per-project config file.
         self._project = {}
 
-        #: Environment variable name prefix
         # TODO: make this INVOKE_ and update tests to account?
         self._env_prefix = '' if env_prefix is None else env_prefix
-        #: Config data loaded from the shell environment.
         self._env = {}
 
-        #: Path to the user-specified runtime config file.
         self._runtime_path = runtime_path
-        #: Data loaded from the runtime config file.
         self._runtime = {}
-        #: Whether the runtime config file has been loaded or not (or ``None``
-        #: if no loading has been attempted yet.)
         self._runtime_found = None
 
-        #: Overrides - highest possible config level. Typically filled in from
-        #: command-line flags.
         self._overrides = {} if overrides is None else overrides
 
         # Perform initial load & merge.
