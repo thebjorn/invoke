@@ -286,16 +286,16 @@ class Result(object):
 
     * ``stdout``: The subprocess' standard output, as a multiline string.
     * ``stderr``: Same as ``stdout`` but containing standard error (unless
-      the process was invoked via a pty; see `run`.)
+      the process was invoked via a pty; see `.Runner.run`.)
     * ``exited``: An integer representing the subprocess' exit/return code.
     * ``return_code``: An alias to ``exited``.
     * ``ok``: A boolean equivalent to ``exited == 0``.
     * ``failed``: The inverse of ``ok``: ``True`` if the program exited with a
       nonzero return code.
     * ``pty``: A boolean describing whether the subprocess was invoked with a
-      pty or not; see `run`.
+      pty or not; see `.Runner.run`.
     * ``exception``: Typically ``None``, but may be an exception object if
-      ``pty`` was ``True`` and ``run()`` had to swallow an apparently-spurious
+      ``pty`` was ``True`` and ``run`` had to swallow an apparently-spurious
       ``OSError``. Solely for sanity checking/debugging purposes.
 
     `Result` objects' truth evaluation is equivalent to their ``ok``
@@ -333,17 +333,3 @@ class Result(object):
     @property
     def failed(self):
         return not self.ok
-
-
-def run(command, **kwargs):
-    """
-    Invoke ``command`` in a subprocess and return a `Result` object.
-
-    This function is simply a convenience wrapper for creating a `Runner`
-    subclass (default: `Local`) and calling its `~.Runner.run` method. Please
-    see `.Runner.run` for details on all behaviors & arguments, sans the below.
-
-    :param runner: Class to use for command execution. Default: `Local`.
-    """
-    runner = kwargs.pop('runner', Local)()
-    return runner.run(command, **kwargs)

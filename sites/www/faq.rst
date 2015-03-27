@@ -3,6 +3,38 @@ Frequently asked questions
 ==========================
 
 
+General project questions
+=========================
+
+Why was Invoke split off from the `Fabric <http://fabfile.org>`_ project?
+-------------------------------------------------------------------------
+
+Fabric (1.x and earlier) was a hybrid project implementing two feature sets:
+task execution (organization of task functions, execution of them via CLI, and
+local shell commands) and high level SSH actions (organization of
+servers/hosts, remote shell commands, and file transfer).
+
+For use cases requiring both feature sets, this arrangement worked well.
+However, over time it became clear many users only needed one or the other,
+with local-only users resenting heavy SSH/crypto install requirements, and
+remote-focused users struggling with API limitations caused by the hybrid
+codebase.
+
+When planning Fabric 2.x, having the "local" feature set as a standalone
+library made sense, and it seemed plausible to design the SSH component as a
+separate layer above. Thus, Invoke was created to focus exclusively on local
+and abstract concerns, leaving Fabric 2.x concerned only with servers and
+network commands.
+
+Fabric 2 will leverage parts of Invoke's API, and allow (but not require!) use
+of Invoke's CLI features, allowing multiple use cases (build tool, high level
+SSH lib, hybrid build/orchestration tool) to coexist without negatively
+impacting each other.
+
+For more info on how this relates to Fabric specifically, please see `Fabric's
+roadmap <http://fabfile.org/roadmap.html>`_.
+
+
 Defining/executing tasks
 ========================
 
@@ -55,8 +87,8 @@ Calling Python or Python scripts prints all the output at the end of the run!
 
 The symptom is easy to spot - you're running a command that takes a few seconds
 or more to execute, it usually prints lines of text as it goes, but via
-`~invoke.runner.run` nothing appears to happen at first, and then all the
-output prints once it's done executing.
+`~invoke.run` nothing appears to happen at first, and then all the output
+prints once it's done executing.
 
 This is usually due to Python - the "inner" Python executable you're invoking,
 not the one Invoke is running under - performing unwanted buffering of its
@@ -69,4 +101,4 @@ saying ``pty=True`` (e.g. ``run("python foo", pty=True)``).
 Alternately, since both Invoke and the inner command are Python, you could try
 loading the inner Python module directly in your Invoke-using code, and call
 whichever methods its command-line stub is using - instead of using
-`~invoke.runner.run`. This can often have other benefits too.
+`~invoke.run`. This can often have other benefits too.

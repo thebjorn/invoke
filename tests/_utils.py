@@ -97,8 +97,14 @@ def expect_exit(code=0):
 
 
 @contextmanager
+def mocked_run():
+    with patch('invoke.runner.Runner.run') as run:
+        yield run
+
+
+@contextmanager
 def run_in_configs():
-    with patch('invoke.context.run') as run:
+    with mocked_run() as run:
         with cd('configs'):
             yield run
 

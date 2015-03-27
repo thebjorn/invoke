@@ -2,22 +2,39 @@
 Changelog
 =========
 
+* :support:`-` Rearrange internals relating to the top level ``run`` function,
+  including moving it from its original home in `invoke.runner`, to
+  `invoke.__init__ <invoke>` (to reflect that fact that it itself is now simply
+  a convenience wrapper).
+
+  .. warning::
+    This is a backwards incompatible change if your code was doing ``from
+    invoke.runner import run`` instead of ``from invoke import run``. All such
+    code should now be using ``from invoke import run``. The function's public
+    signature has **not** changed.
+
+* :support:`224` Add a completion script for the ``fish`` shell, courtesy of
+  Jaime Marquínez Ferrándiz.
+* :release:`0.10.1 <2015-03-17>`
+* :support:`-` Tweak README to reflect recent(-ish) changes in ``pip`` re:
+  installing the development version via ``pip`` instead of using e.g. git.
+* :release:`0.10.0 <2015-03-17>`
 * :feature:`104` Add core CLI flag ``--complete`` to support shell tab
   completion scripts, and add some 'blessed' such scripts for bash (3 and 4)
   and zsh. Thanks to Ivan Malison and Andrew Roberts for providing discussion &
   early patchsets.
 * :support:`-` Reorganize `~invoke.runner.Runner`, `~invoke.runner.Local` and
-  `~invoke.runner.run` for improved distribution of responsibilities &
+  ``invoke.runner.run`` for improved distribution of responsibilities &
   downstream subclassing.
 
   .. warning::
     This includes backwards incompatible changes to the API signature of most
-    members of the `invoke.runner` module, including `~invoke.runner.run`.
-    (However, in the case of `~invoke.runner.run`, the changes are mostly in
+    members of the `invoke.runner` module, including ``invoke.runner.run``.
+    (However, in the case of ``invoke.runner.run``, the changes are mostly in
     the later, optional keyword arguments.)
 
 * :feature:`219` Fall back to non-PTY command execution in situations where
-  ``pty=True`` but no PTY appears present. See `~invoke.runner.Runner.run` for
+  ``pty=True`` but no PTY appears present. See `~invoke.runner.Local` for
   details.
 * :support:`212` Implement basic linting support using ``flake8``, and apply
   formatting changes to satisfy said linting. As part of this shakeup, also
@@ -26,7 +43,7 @@ Changelog
 * :support:`215` (also :issue:`213`, :issue:`214`) Tweak tests & configuration
   sections of the code to include Windows compatibility. Thanks to Paul Moore.
 * :bug:`201 major` (also :issue:`211`) Replace the old, first-draft gross
-  monkeypatched Popen code used for `~invoke.runner.run` with a
+  monkeypatched Popen code used for ``invoke.runner.run`` with a
   non-monkeypatched approach that works better on non-POSIX platforms like
   Windows, and also attempts to handle encoding and locale issues more
   gracefully (meaning: at all gracefully).
@@ -40,7 +57,7 @@ Changelog
   themselves.
 
   .. warning::
-    The top level `~invoke.runner.run` function has had a minor signature
+    The top level ``invoke.runner.run`` function has had a minor signature
     change: the sixth positional argument used to be ``runner`` and is now
     ``encoding`` (with ``runner`` now being the seventh positional argument).
 
@@ -55,17 +72,17 @@ Changelog
     user config-setting code may continue to work as-is. In addition, this
     system may see further updates before 1.0.
 
-* :bug:`191` Bypass ``pexpect``'s automatic command splitting to avoid issues
-  running complex nested/quoted commands under a pty. Credit to ``@mijikai``
-  for noticing the problem.
-* :bug:`183` Task docstrings whose first line started on the same line as the
-  opening quote(s) were incorrectly presented in ``invoke --help <task>``. This
-  has been fixed by using `inspect.getdoc`. Thanks to Pekka Klärck for the
+* :bug:`191 major` Bypass ``pexpect``'s automatic command splitting to avoid
+  issues running complex nested/quoted commands under a pty. Credit to
+  ``@mijikai`` for noticing the problem.
+* :bug:`183 major` Task docstrings whose first line started on the same line as
+  the opening quote(s) were incorrectly presented in ``invoke --help <task>``.
+  This has been fixed by using `inspect.getdoc`. Thanks to Pekka Klärck for the
   catch & suggested fix.
-* :bug:`180` Empty invocation (e.g. just ``invoke`` with no flags or tasks, and
-  when no default task is defined) no
-  longer printed help output, instead complaining about the lack of default
-  task. It now prints help again. Thanks to Brent O'Connor for the catch.
+* :bug:`180 major` Empty invocation (e.g. just ``invoke`` with no flags or
+  tasks, and when no default task is defined) no longer printed help output,
+  instead complaining about the lack of default task. It now prints help again.
+  Thanks to Brent O'Connor for the catch.
 * :bug:`175 major` ``autoprint`` did not function correctly for tasks stored
   in sub-collections; this has been fixed. Credit: Matthias Lehmann.
 * :release:`0.9.0 <2014-08-26>`
